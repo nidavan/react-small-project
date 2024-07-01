@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { db } from "./fierbase";
+import { db } from "./firebase";
 import {
     collection,
     addDoc,
@@ -12,20 +12,21 @@ import Button from '@mui/material/Button';
 import Add from "@mui/icons-material/Add";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import Dialog from '@mui/material/Dialog';
+import {
+    DataGrid,
+    GridToolbarContainer,
+    GridToolbarFilterButton,
+    GridToolbarQuickFilter,
+} from '@mui/x-data-grid';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import StaffDialog from './components/StaffDialog';
+import { saveAs } from 'file-saver';
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const CrudApp = () => {
     const [staff, setStaff] = useState([]);
-    const [formData, setFormData] = useState({
-        staffId: '',
-        fullName: '',
-        birthday: '',
-        genderId: 1
-    });
     const [dialogOpen, setDialogOpen] = useState(false);
     const [currentStaff, setCurrentStaff] = useState(null);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -81,6 +82,29 @@ const CrudApp = () => {
         setSnackbarOpen(false);
     };
 
+    const convertToCSV = (data) => {
+        const header = Object.keys(data[0]).join(",");
+        const rows = data.map(row => Object.values(row).join(",")).join("\n");
+        return `${header}\n${rows}`;
+    };
+
+    const handleExportCSV = () => {
+        const dataToExport = staff.map(({ id, fullName, birthday, gender }) => ({ id, fullName, birthday, gender }));
+        const csv = convertToCSV(dataToExport);
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        saveAs(blob, "staff_data.csv");
+    };
+
+    const handleExportPDF = () => {
+        const doc = new jsPDF();
+        const dataToExport = staff.map(({id, fullName, birthday, gender }) => ({ id, fullName, birthday, gender }));
+        doc.autoTable({
+            head: [['ID', 'Full Name', 'Birthday', 'Gender']],
+            body: dataToExport.map(item => [item.id, item.fullName, item.birthday, item.gender]),
+        });
+        doc.save("staff_data.pdf");
+    };
+
     const columns = [
         { field: 'id', headerName: 'ID', width: 100 },
         { field: 'fullName', headerName: 'Full Name', width: 300 },
@@ -90,6 +114,8 @@ const CrudApp = () => {
             field: 'actions',
             headerName: 'Actions',
             width: 200,
+            sortable: false, // Prevent sorting on the actions column
+            filterable: false, // Prevent filtering on the actions column
             renderCell: (params) => (
                 <Box sx={{ display: 'flex', gap: 1, marginTop: "5px" }}>
                     <Button
@@ -131,7 +157,14 @@ const CrudApp = () => {
         }
         setDialogOpen(false);
     };
-
+    function CustomToolbar() {
+        return (
+          <GridToolbarContainer>
+            <GridToolbarQuickFilter />
+            <GridToolbarFilterButton />
+          </GridToolbarContainer>
+        );
+      }
     return (
         <Box sx={{ p: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
@@ -148,6 +181,22 @@ const CrudApp = () => {
                     >
                         Add Staff
                     </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={handleExportCSV}
+                        sx={{ color: 'white', ml: 2 }}
+                    >
+                        Export CSV
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={handleExportPDF}
+                        sx={{ color: 'white', ml: 2 }}
+                    >
+                        Export PDF
+                    </Button>
                 </Grid>
                 <Grid item xs={12}>
                     <Box sx={{ width: '100%' }}>
@@ -155,31 +204,16 @@ const CrudApp = () => {
                             rows={staff}
                             columns={columns}
                             autoHeight
-                            disableColumnFilter
                             disableColumnSelector
                             disableDensitySelector
-                            slots={{ toolbar: GridToolbar }}
+                            slots={{ toolbar: CustomToolbar }}
                             slotProps={{
                                 toolbar: {
                                     showQuickFilter: true,
                                 },
                             }}
+                            
                         />
-
-                        {/* <DataGrid
-                            rows={staff}
-                            columns={columns}
-                            autoHeight
-                            // disableColumnFilter
-                            // disableColumnSelector
-                            // disableDensitySelector
-                            components={{ Toolbar: GridToolbar }}
-                            componentsProps={{
-                                toolbar: {
-                                    showQuickFilter: true,
-                                },
-                            }}
-                        /> */}
                     </Box>
                 </Grid>
             </Grid>
@@ -191,7 +225,7 @@ const CrudApp = () => {
             />
             <Snackbar
                 open={snackbarOpen}
-                autoHideDuration={6000}
+                autoHideDuration={3000}
                 onClose={handleSnackbarClose}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >

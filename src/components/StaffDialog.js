@@ -65,7 +65,7 @@ const StaffDialog = ({ open, onClose, onSave, staff }) => {
                         label="Staff ID"
                         type="text"
                         fullWidth
-                        variant="standard"
+                        variant="outlined"
                         {...formik.getFieldProps('id')}
                         error={formik.touched.id && Boolean(formik.errors.id)}
                         helperText={formik.touched.id && formik.errors.id}
@@ -75,7 +75,7 @@ const StaffDialog = ({ open, onClose, onSave, staff }) => {
                         label="Full Name"
                         type="text"
                         fullWidth
-                        variant="standard"
+                        variant="outlined"
                         {...formik.getFieldProps('fullName')}
                         error={formik.touched.fullName && Boolean(formik.errors.fullName)}
                         helperText={formik.touched.fullName && formik.errors.fullName}
@@ -85,7 +85,7 @@ const StaffDialog = ({ open, onClose, onSave, staff }) => {
                         label="Birthday"
                         type="date"
                         fullWidth
-                        variant="standard"
+                        variant="outlined"
                         InputLabelProps={{
                             shrink: true,
                         }}
@@ -98,7 +98,7 @@ const StaffDialog = ({ open, onClose, onSave, staff }) => {
                         label="Gender"
                         select
                         fullWidth
-                        variant="standard"
+                        variant="outlined"
                         {...formik.getFieldProps('gender')}
                         error={formik.touched.gender && Boolean(formik.errors.gender)}
                         helperText={formik.touched.gender && formik.errors.gender}

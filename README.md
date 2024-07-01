@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### Clone project and start project with react js
+- after clone project directory, you need to initial project by run (It will install node package for project)
+### npm install or yarn install 
+
 ## Available Scripts
 
 In the project directory, you can run:
