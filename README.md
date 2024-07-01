@@ -2,6 +2,11 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### About this project using
+-Firebase: For store data staff infomation
+-React js: For Frontend (using mui for design style https://mui.com/)
+-Node version: '16.18.0'
+
 ### Clone project and start project with react js
 after clone project directory, you need to initial project by run (It will install node package for project)
 ### `npm install` or `yarn install` 
