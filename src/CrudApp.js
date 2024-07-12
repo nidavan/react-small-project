@@ -168,7 +168,7 @@ const CrudApp = () => {
     return (
         <Box sx={{ p: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                <h1>Staff Management</h1>
+                <div className="text-blue-500 font-bold text-2xl" >Staff Management</div>
             </Box>
             <Grid container spacing={2}>
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
